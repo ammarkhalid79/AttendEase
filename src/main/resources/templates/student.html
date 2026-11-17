@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('My attendance', 'student', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>My attendance</h1><p>Check your courses, attendance percentages and class history.</p></div></header>
+<section class="panel padded"><h2 th:text="${student.fullName}"></h2><p class="muted" th:text="|${student.registrationNumber} Â· ${student.department}|"></p><p class="muted small mb-0">Present and late count toward attendance. Below 75% is low attendance.</p></section>
+<p class="empty" th:if="${courses.isEmpty()}">You are not enrolled in any courses.</p>
+<div class="cards">
+  <section class="panel padded" th:each="item : ${courses}">
+    <span class="course-code" th:text="${item.course.courseCode}"></span>
+    <h2 th:text="${item.course.courseName}"></h2>
+    <strong class="metric" th:text="${item.summary.display()}"></strong>
+    <p class="muted" th:text="|${item.summary.present()} present Â· ${item.summary.late()} late Â· ${item.summary.absent()} absent|"></p>
+    <p th:if="${item.summary.low()}" class="alert alert-warning mb-0" th:text="|Your attendance is ${item.summary.display()}, below the required 75%.|"></p>
+  </section>
+</div>
+<section class="panel padded"><h2>Attendance history</h2><p class="empty" th:if="${entries.isEmpty()}">No attendance has been recorded for you.</p><div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">Date</th><th scope="col">Course</th><th scope="col">Session</th><th scope="col">Status</th></tr></thead><tbody><tr th:each="entry : ${entries}"><td th:text="${entry.session.sessionDate}"></td><td th:text="${entry.course.courseCode}"></td><td th:text="${entry.session.sessionNumber}"></td><td><span class="status" th:classappend="${entry.status.name().toLowerCase()}" th:text="${entry.status.name()}"></span></td></tr></tbody></table></div></section>
+</main>
+</html>

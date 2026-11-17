@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Mark attendance', 'attendance', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Mark attendance</h1><p>Open a class session to record or update attendance.</p></div></header>
+<section class="panel padded">
+<form class="filters" th:action="@{/teacher/attendance}" method="get">
+  <div><label class="form-label" for="courseId">Course</label><select class="form-select" id="courseId" name="courseId" required>
+<option value="">Select a course</option><option th:each="course : ${courses}" th:value="${course.id}" th:selected="${course.id == courseId}" th:text="|${course.courseCode} Â· ${course.courseName}|"></option></select></div>
+  <div><label class="form-label" for="date">Date</label><input class="form-control" id="date" name="date" type="date" th:value="${date}" th:attr="max=${today}" min="1000-01-01" required></div>
+  <div><label class="form-label" for="number">Session number</label><input class="form-control" id="number" name="number" type="number" min="1" th:value="${number}" required></div>
+  <button class="btn btn-primary">Open sheet</button>
+</form>
+</section>
+<section class="panel padded" th:if="${marks != null}">
+<div class="section-heading"><div><h2>Attendance sheet</h2><p class="muted mb-0" th:text="|${date} Â· Session ${number}|"></p></div>
+  <button class="btn btn-outline-primary" th:unless="${marks.isEmpty()}" type="button" data-mark-all>Mark all present</button></div>
+<p class="empty" th:if="${marks.isEmpty()}">There are no eligible students for this session.</p>
+<form th:unless="${marks.isEmpty()}" th:action="@{/teacher/attendance}" method="post">
+  <input type="hidden" name="courseId" th:value="${courseId}">
+  <input type="hidden" name="date" th:value="${date}">
+  <input type="hidden" name="number" th:value="${number}">
+  <div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">Registration</th><th scope="col">Student</th><th scope="col">Status</th></tr></thead><tbody><tr th:each="mark : ${marks}"><td th:text="${mark.student.registrationNumber}"></td><td th:text="${mark.student.fullName}"></td>
+  <td><select class="form-select mark-select" th:name="|mark_${mark.student.id}|" th:attr="aria-label=|Status for ${mark.student.fullName}|" required>
+  <option value="">Choose status</option><option th:each="status : ${statuses}" th:value="${status}" th:text="${status}" th:selected="${status == mark.status}"></option>
+  </select></td></tr></tbody></table></div>
+  <button class="btn btn-primary">Save attendance</button>
+</form>
+</section>
+</main>
+</html>

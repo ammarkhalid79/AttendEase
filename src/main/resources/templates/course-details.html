@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Course details', 'courses', ~{::main})}">
+<main>
+<header class="page-header">
+<div><span class="course-code" th:text="${course.courseCode}"></span><h1 th:text="${course.courseName}"></h1><p th:text="${course.description}"></p></div>
+<div class="quick-actions"><a class="btn btn-outline-primary" th:href="@{/teacher/courses/{id}/edit(id=${course.id})}">Edit course</a><a class="btn btn-primary" th:href="@{/teacher/attendance(courseId=${course.id})}">Mark attendance</a></div>
+</header>
+<section class="panel padded">
+<h2>Enroll a student</h2>
+<form class="filters" th:unless="${available.isEmpty()}" th:action="@{/teacher/courses/{id}/enroll(id=${course.id})}" method="post">
+  <div><label class="form-label" for="studentId">Student</label><select class="form-select" id="studentId" name="studentId" required>
+    <option value="">Select a student</option><option th:each="s : ${available}" th:value="${s.id}" th:text="|${s.fullName} Â· ${s.registrationNumber}|"></option>
+  </select></div><button class="btn btn-primary">Enroll</button>
+</form>
+<p class="empty" th:if="${available.isEmpty()}">There are no active students available to enroll.</p>
+</section>
+<section class="panel padded">
+<h2>Enrolled students</h2>
+<p class="empty" th:if="${roster.isEmpty()}">This course has no enrolled students.</p>
+<div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">Registration</th><th scope="col">Student</th><th scope="col">Department</th><th scope="col">Semester</th></tr></thead><tbody><tr th:each="student : ${roster}"><td th:text="${student.registrationNumber}"></td><td><a th:href="@{/teacher/students/{id}(id=${student.id})}" th:text="${student.fullName}"></a></td><td th:text="${student.department}"></td><td th:text="${student.semester}"></td></tr></tbody></table></div>
+</section>
+</main>
+</html>

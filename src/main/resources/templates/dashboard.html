@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Dashboard', 'dashboard', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Dashboard</h1><p>Monitor attendance across your courses.</p></div><a class="btn btn-primary" th:href="@{/teacher/attendance}"><i class="bi bi-plus-lg me-2" aria-hidden="true"></i> Mark attendance</a></header>
+<div class="stats">
+  <section class="panel stat"><i class="bi bi-people" aria-hidden="true"></i><div><p>Total students</p><strong th:text="${dashboard.students}"></strong></div></section>
+<section class="panel stat"><i class="bi bi-journal-bookmark" aria-hidden="true"></i><div><p>Your courses</p><strong th:text="${dashboard.courses}"></strong></div></section>
+<section class="panel stat"><i class="bi bi-calendar-check" aria-hidden="true"></i><div><p>Attendance today</p><strong th:text="${dashboard.today.display()}"></strong></div></section>
+<section class="panel stat"><i class="bi bi-exclamation-triangle" aria-hidden="true"></i><div><p>Below 75%</p><strong th:text="${dashboard.low.size()}"></strong></div></section>
+</div>
+<div class="dashboard-grid">
+  <section class="panel padded">
+    <h2>Attendance trend</h2><p class="muted">Last 7 days</p>
+    <div class="trend">
+      <div class="trend-day" th:each="day : ${dashboard.trend}">
+        <span class="trend-value" th:text="${day.summary.display()}"></span>
+        <div class="trend-track"><progress th:if="${day.summary.percentage() != null}" max="100" th:value="${day.summary.percentage()}" th:attr="aria-label=${day.date}"></progress></div>
+        <time th:attr="datetime=${day.date}" th:text="${#temporals.format(day.date, 'EEE')}"></time>
+      </div>
+    </div>
+    <p class="muted small mb-0">Present and late count toward attendance. Below 75% is low attendance.</p>
+  </section>
+  <section class="panel padded"><h2>Needs attention</h2><p class="muted">Students below 75% across your courses</p>
+    <p class="empty" th:if="${dashboard.low.isEmpty()}">No low-attendance students.</p>
+    <ul th:unless="${dashboard.low.isEmpty()}" class="list-group list-group-flush">
+      <li class="list-group-item px-0" th:each="student : ${dashboard.low}"><a th:href="@{/teacher/reports(studentId=${student.id})}" th:text="${student.fullName}"></a></li>
+    </ul>
+    <div class="quick-actions"><a class="btn btn-outline-primary" th:href="@{/teacher/students/new}">Add student</a><a class="btn btn-outline-primary" th:href="@{/teacher/reports}">View reports</a></div>
+  </section>
+</div>
+<section class="panel padded" th:with="entries=${dashboard.recent}"><h2>Recent attendance</h2><p class="empty" th:if="${entries.isEmpty()}">Saved attendance will appear here.</p><div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">Date</th><th scope="col">Course</th><th scope="col">Session</th><th scope="col">Student</th><th scope="col">Status</th></tr></thead><tbody><tr th:each="entry : ${entries}"><td th:text="${entry.session.sessionDate}"></td><td th:text="${entry.course.courseCode}"></td><td><a th:href="@{/teacher/attendance(courseId=${entry.course.id},date=${entry.session.sessionDate},number=${entry.session.sessionNumber})}" th:text="|Session ${entry.session.sessionNumber}|"></a></td><td th:text="${entry.student.fullName}"></td><td><span class="status" th:classappend="${entry.status.name().toLowerCase()}" th:text="${entry.status.name()}"></span></td></tr></tbody></table></div></section>
+</main>
+</html>

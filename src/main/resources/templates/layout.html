@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="page(title, section, content)">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="|${title} Â· AttendEase|">AttendEase</title>
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap/5.3.8/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/webjars/bootstrap-icons/1.13.1/font/bootstrap-icons.css}">
+  <link rel="stylesheet" th:href="@{/css/parent.css}">
+  <script th:src="@{/webjars/bootstrap/5.3.8/js/bootstrap.bundle.min.js}" defer></script>
+  <script th:src="@{/js/parent.js}" defer></script>
+</head>
+<body th:class="${section == 'login' ? 'login-body' : ''}">
+<a class="skip-link" href="#page-content">Skip to content</a>
+<div th:if="${section != 'login'}" class="app-shell">
+  <header class="mobile-header">
+    <a class="brand" th:href="@{/}"><i class="bi bi-calendar2-check" aria-hidden="true"></i> AttendEase</a>
+    <button class="btn btn-outline-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Open navigation"><i class="bi bi-list" aria-hidden="true"></i></button>
+  </header>
+  <aside id="sidebar" class="offcanvas-lg offcanvas-start sidebar" aria-labelledby="nav-title">
+    <div class="offcanvas-header"><span class="offcanvas-title" id="nav-title">Navigation</span><button class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebar" type="button" aria-label="Close navigation"></button></div>
+    <div class="offcanvas-body">
+      <a class="brand desktop-brand" th:href="@{/}"><i class="bi bi-calendar2-check" aria-hidden="true"></i> AttendEase</a>
+      <nav aria-label="Main navigation">
+        <th:block th:if="${section != 'student' and section != 'error'}">
+          <a th:href="@{/teacher}" th:classappend="${section == 'dashboard' ? 'selected' : ''}" th:attr="aria-current=${section == 'dashboard' ? 'page' : null}"><i class="bi bi-grid" aria-hidden="true"></i> Dashboard</a>
+          <a th:href="@{/teacher/students}" th:classappend="${section == 'students' ? 'selected' : ''}" th:attr="aria-current=${section == 'students' ? 'page' : null}"><i class="bi bi-people" aria-hidden="true"></i> Students</a>
+          <a th:href="@{/teacher/courses}" th:classappend="${section == 'courses' ? 'selected' : ''}" th:attr="aria-current=${section == 'courses' ? 'page' : null}"><i class="bi bi-journal-bookmark" aria-hidden="true"></i> Courses</a>
+          <a th:href="@{/teacher/attendance}" th:classappend="${section == 'attendance' ? 'selected' : ''}" th:attr="aria-current=${section == 'attendance' ? 'page' : null}"><i class="bi bi-calendar-check" aria-hidden="true"></i> Attendance</a>
+          <a th:href="@{/teacher/reports}" th:classappend="${section == 'reports' ? 'selected' : ''}" th:attr="aria-current=${section == 'reports' ? 'page' : null}"><i class="bi bi-bar-chart" aria-hidden="true"></i> Reports</a>
+        </th:block>
+        <a th:if="${section == 'student'}" class="selected" aria-current="page" th:href="@{/student}"><i class="bi bi-grid" aria-hidden="true"></i> My attendance</a>
+        <a th:if="${section == 'error'}" th:href="@{/}"><i class="bi bi-house" aria-hidden="true"></i> Home</a>
+      </nav>
+      <form class="sign-out" th:action="@{/logout}" method="post">
+        <button type="submit"><i class="bi bi-box-arrow-left" aria-hidden="true"></i> Sign out</button>
+      </form>
+    </div>
+  </aside>
+  <div id="page-content" class="workspace" tabindex="-1">
+    <div class="alert alert-success" role="status" th:if="${notice}" th:text="${notice}"></div>
+    <div class="alert alert-danger" role="alert" th:if="${problem}" th:text="${problem}"></div>
+    <th:block th:replace="${content}"/>
+  </div>
+</div>
+<div id="page-content" class="login-shell" tabindex="-1" th:if="${section == 'login'}">
+  <th:block th:replace="${content}"/>
+</div>
+</body>
+</html>

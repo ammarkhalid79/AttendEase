@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Student details', 'students', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Student details</h1><p>Review the student profile and account status.</p></div><a class="btn btn-outline-primary" th:href="@{/teacher/students}">All students</a></header>
+<section class="panel padded">
+<h2 th:text="${student.fullName}"></h2>
+<dl class="details"><div><dt>Student ID</dt><dd th:text="${student.id}"></dd></div><div><dt>Registration</dt><dd th:text="${student.registrationNumber}"></dd></div><div><dt>Email</dt><dd th:text="${student.email}"></dd></div><div><dt>Department</dt><dd th:text="${student.department}"></dd></div><div><dt>Semester</dt><dd th:text="${student.semester}"></dd></div><div><dt>Account</dt><dd th:text="${active ? 'Active' : 'Inactive'}"></dd></div></dl>
+<div class="quick-actions">
+<a class="btn btn-primary" th:href="@{/teacher/students/{id}/edit(id=${student.id})}">Edit student</a>
+<form th:if="${active}" method="post" th:action="@{/teacher/students/{id}/deactivate(id=${student.id})}" data-confirm="Deactivate this student account? Attendance history will be retained.">
+  <button class="btn btn-outline-danger" type="submit">Deactivate</button>
+</form></div>
+</section>
+</main>
+</html>

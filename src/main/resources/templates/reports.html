@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Reports', 'reports', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Attendance reports</h1><p>Filter attendance across your courses and export the matching records.</p></div></header>
+<section class="panel padded">
+  <form class="filters" th:action="@{/teacher/reports}" method="get">
+    <div><label class="form-label" for="courseId">Course</label><select class="form-select" id="courseId" name="courseId" >
+<option value="">All courses</option><option th:each="course : ${courses}" th:value="${course.id}" th:selected="${course.id == courseId}" th:text="|${course.courseCode} Â· ${course.courseName}|"></option></select></div>
+    <div><label class="form-label" for="studentId">Student</label><select class="form-select" id="studentId" name="studentId"><option value="">All students</option>
+    <option th:each="student : ${students}" th:value="${student.id}" th:selected="${student.id == studentId}" th:text="|${student.fullName} Â· ${student.registrationNumber}|"></option></select></div>
+    <div><label class="form-label" for="from">From</label><input class="form-control" id="from" name="from" type="date" th:value="${from}"></div>
+    <div><label class="form-label" for="to">To</label><input class="form-control" id="to" name="to" type="date" th:value="${to}"></div>
+    <div><label class="form-label" for="status">Status</label><select class="form-select" id="status" name="status"><option value="">All statuses</option>
+    <option th:each="choice : ${statuses}" th:value="${choice}" th:selected="${choice == status}" th:text="${choice}"></option></select></div>
+    <button class="btn btn-primary">Apply</button><a class="btn btn-outline-secondary" th:href="@{/teacher/reports}">Reset</a>
+  </form>
+</section>
+<section class="panel padded">
+  <div class="section-heading"><h2>Summary</h2><a class="btn btn-outline-primary" th:href="@{/teacher/reports.csv(courseId=${courseId},studentId=${studentId},from=${from},to=${to},status=${status})}"><i class="bi bi-download me-2" aria-hidden="true"></i>Export CSV</a></div>
+  <dl class="details report-details"><div><dt>Conducted class sessions</dt><dd th:text="${report.conductedSessions()}"></dd></div><div><dt>Student sessions</dt><dd th:text="${report.summary.conducted()}"></dd></div><div><dt>Present</dt><dd th:text="${report.summary.present()}"></dd></div><div><dt>Absent</dt><dd th:text="${report.summary.absent()}"></dd></div><div><dt>Late</dt><dd th:text="${report.summary.late()}"></dd></div><div><dt>Attendance</dt><dd th:text="${report.summary.display()}"></dd></div></dl>
+  <p class="muted small mb-0">Present and late count toward attendance. Below 75% is low attendance.</p><p class="muted small">The status filter applies to the records and CSV. The summary uses all statuses for the selected courses, students and dates.</p>
+  <h2>Records</h2>
+  <p class="empty" th:if="${report.entries.isEmpty()}">No records match these filters.</p>
+  <div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">Date</th><th scope="col">Course</th><th scope="col">Session</th><th scope="col">Registration</th><th scope="col">Student</th><th scope="col">Status</th></tr></thead><tbody><tr th:each="entry : ${report.entries}"><td th:text="${entry.session.sessionDate}"></td><td th:text="${entry.course.courseCode}"></td><td><a th:href="@{/teacher/attendance(courseId=${entry.course.id},date=${entry.session.sessionDate},number=${entry.session.sessionNumber})}" th:text="|Session ${entry.session.sessionNumber}|"></a></td><td th:text="${entry.student.registrationNumber}"></td><td th:text="${entry.student.fullName}"></td><td><span class="status" th:classappend="${entry.status.name().toLowerCase()}" th:text="${entry.status.name()}"></span></td></tr></tbody></table></div>
+</section>
+</main>
+</html>

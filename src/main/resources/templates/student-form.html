@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Student form', 'students', ~{::main})}">
+<main>
+<header class="page-header"><div><h1 th:text="${editing == null ? 'Add student' : 'Edit student'}"></h1><p>Students can sign in using their registration number or email.</p></div></header>
+<form class="panel padded stack editor" th:action="@{/teacher/students/save}" th:object="${studentForm}" method="post">
+  <input th:if="${editing != null}" type="hidden" name="id" th:value="${editing}">
+  <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}"><div th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div></div>
+  <div class="form-grid">
+  <div>
+  <label class="form-label" for="fullName">Full name</label>
+  <input class="form-control" id="fullName" th:field="*{fullName}" type="text" required maxlength="120">
+  <p class="text-danger small mb-0" th:errors="*{fullName}"></p>
+</div>
+<div>
+  <label class="form-label" for="registrationNumber">Registration number</label>
+  <input class="form-control" id="registrationNumber" th:field="*{registrationNumber}" type="text" required maxlength="40">
+  <p class="text-danger small mb-0" th:errors="*{registrationNumber}"></p>
+</div>
+<div>
+  <label class="form-label" for="email">Email</label>
+  <input class="form-control" id="email" th:field="*{email}" type="email" required maxlength="160">
+  <p class="text-danger small mb-0" th:errors="*{email}"></p>
+</div>
+<div>
+  <label class="form-label" for="department">Department</label>
+  <input class="form-control" id="department" th:field="*{department}" type="text" required maxlength="100">
+  <p class="text-danger small mb-0" th:errors="*{department}"></p>
+</div>
+<div>
+  <label class="form-label" for="semester">Semester</label>
+  <input class="form-control" id="semester" th:field="*{semester}" type="number" required min="1" max="12">
+  <p class="text-danger small mb-0" th:errors="*{semester}"></p>
+</div>
+  <div><label for="password" class="form-label">Password</label><input id="password" name="password" class="form-control" type="password" autocomplete="new-password" minlength="8" maxlength="72" th:required="${editing == null}" aria-describedby="password-help">
+  <p id="password-help" class="muted small mb-0" th:text="${editing == null ? 'Use at least 8 characters.' : 'Leave blank to keep the current password.'}"></p>
+  <p class="text-danger small mb-0" th:errors="*{password}"></p></div>
+  </div>
+  <div class="quick-actions"><button class="btn btn-primary" type="submit">Save student</button><a class="btn btn-outline-secondary" th:href="@{/teacher/students}">Cancel</a></div>
+</form>
+</main>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Courses', 'courses', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Courses</h1><p>Manage course details and enrolled students.</p></div><a class="btn btn-primary" th:href="@{/teacher/courses/new}">Add course</a></header>
+<p class="empty" th:if="${courses.isEmpty()}">Add a course to start enrolling students.</p>
+<div class="cards">
+<section class="panel padded course-card" th:each="course : ${courses}">
+  <span class="course-code" th:text="${course.courseCode}"></span><h2 th:text="${course.courseName}"></h2>
+  <p class="muted" th:text="${course.description}"></p>
+  <a class="btn btn-outline-primary" th:href="@{/teacher/courses/{id}(id=${course.id})}">View course</a>
+</section>
+</div>
+</main>
+</html>

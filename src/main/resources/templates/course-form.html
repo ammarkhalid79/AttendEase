@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Course form', 'courses', ~{::main})}">
+<main>
+<header class="page-header"><div><h1 th:text="${editing == null ? 'Add course' : 'Edit course'}"></h1><p>Set the code, name and description for the course.</p></div></header>
+<form class="panel padded stack editor" th:action="@{/teacher/courses/save}" th:object="${courseForm}" method="post">
+  <input th:if="${editing != null}" type="hidden" name="id" th:value="${editing}">
+  <div class="alert alert-danger" role="alert" th:if="${#fields.hasGlobalErrors()}"><div th:each="error : ${#fields.globalErrors()}" th:text="${error}"></div></div>
+  <div>
+  <label class="form-label" for="courseCode">Course code</label>
+  <input class="form-control" id="courseCode" th:field="*{courseCode}" type="text" required maxlength="30">
+  <p class="text-danger small mb-0" th:errors="*{courseCode}"></p>
+</div>
+<div>
+  <label class="form-label" for="courseName">Course name</label>
+  <input class="form-control" id="courseName" th:field="*{courseName}" type="text" required maxlength="120">
+  <p class="text-danger small mb-0" th:errors="*{courseName}"></p>
+</div>
+<div>
+  <label class="form-label" for="description">Description</label>
+  <textarea class="form-control" id="description" th:field="*{description}" rows="4" maxlength="1000"></textarea>
+  <p class="text-danger small mb-0" th:errors="*{description}"></p>
+</div>
+  <div class="quick-actions"><button class="btn btn-primary">Save course</button><a class="btn btn-outline-secondary" th:href="@{/teacher/courses}">Cancel</a></div>
+</form>
+</main>
+</html>

@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Page unavailable', 'error', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Page unavailable</h1><p></p></div></header>
+<section class="panel padded">
+  <p th:text="${message != null and !message.isBlank() ? message : 'The page could not be loaded. Check the address or return to AttendEase.'}"></p>
+  <a class="btn btn-primary" th:href="@{/}">Return home</a>
+</section>
+</main>
+</html>

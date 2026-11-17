@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: page('Students', 'students', ~{::main})}">
+<main>
+<header class="page-header"><div><h1>Students</h1><p>Manage the student directory and login accounts.</p></div><a class="btn btn-primary" th:href="@{/teacher/students/new}">Add student</a></header>
+<section class="panel padded">
+<form class="filters" method="get" th:action="@{/teacher/students}">
+  <div><label for="q" class="form-label">Search students</label><input class="form-control" id="q" name="q" type="search" th:value="${q}" placeholder="Name, registration, email, or department"></div>
+  <button class="btn btn-outline-primary">Search</button>
+</form>
+<p class="empty" th:if="${students.isEmpty()}">No students match your search.</p>
+<div class="table-responsive"><table class="table align-middle"><thead><tr><th scope="col">ID</th><th scope="col">Student</th><th scope="col">Registration</th><th scope="col">Email</th><th scope="col">Department</th><th scope="col">Semester</th><th scope="col">Account</th></tr></thead><tbody><tr th:each="student : ${students}"><td th:text="${student.id}"></td>
+<td><a th:href="@{/teacher/students/{id}(id=${student.id})}" th:text="${student.fullName}"></a></td>
+<td th:text="${student.registrationNumber}"></td><td th:text="${student.email}"></td><td th:text="${student.department}"></td><td th:text="${student.semester}"></td>
+<td><span class="status" th:classappend="${activeIds.contains(student.userId) ? 'present' : 'inactive'}" th:text="${activeIds.contains(student.userId) ? 'Active' : 'Inactive'}"></span></td></tr></tbody></table></div>
+</section>
+</main>
+</html>
